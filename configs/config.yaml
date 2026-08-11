@@ -1,0 +1,247 @@
+app:
+  name: xiaolanshu
+  env: local
+
+http:
+  host: 0.0.0.0
+  port: 8080
+  read_timeout_seconds: 5
+  write_timeout_seconds: 10
+
+grpc:
+  host: 0.0.0.0
+
+services:
+  comment:
+    name: comment-service
+    port: 9102
+    target: 127.0.0.1:9102
+  shop:
+    name: shop-service
+    port: 9101
+    target: 127.0.0.1:9101
+  gateway:
+    name: gateway
+  user:
+    name: user-service
+    port: 9001
+    target: 127.0.0.1:9001
+  note:
+    name: note-service
+    port: 9002
+    target: 127.0.0.1:9002
+  order:
+    name: order-service
+    port: 9100
+    target: 127.0.0.1:9100
+
+database:
+  driver: mysql
+  dsn: data/xiaolanshu.db
+
+mysql:
+  dsn: "root:root@tcp(127.0.0.1:3306)/day01?charset=utf8mb4&parseTime=True&loc=Local"
+  max_idle_conns: 10
+  max_open_conns: 100
+  conn_max_lifetime_seconds: 3600
+
+postgresql:
+  dsn: ""
+  max_idle_conns: 10
+  max_open_conns: 100
+  conn_max_lifetime_seconds: 3600
+
+mongodb:
+  uri: mongodb://115.191.16.169:27017
+  username: ""
+  password: ""
+  database: xiaolanshu
+  app_name: bw-cli
+  min_pool_size: 0
+  max_pool_size: 100
+  connect_timeout_seconds: 10
+  server_selection_timeout_seconds: 5
+
+file_storage:
+  provider: minio
+  max_size_mb: 100
+  object_prefix: uploads
+  public_base_url: ""
+  allowed_extensions:
+    - .doc
+    - .docx
+    - .pdf
+    - .jpg
+    - .jpeg
+    - .png
+    - .gif
+    - .webp
+    - .bmp
+    - .svg
+    - .mp4
+    - .mov
+    - .avi
+    - .mkv
+    - .webm
+    - .mp3
+    - .wav
+    - .ogg
+    - .m4a
+    - .flac
+    - .aac
+  allowed_content_types:
+    - application/msword
+    - application/vnd.openxmlformats-officedocument.wordprocessingml.document
+    - application/pdf
+    - image/jpeg
+    - image/png
+    - image/gif
+    - image/webp
+    - image/bmp
+    - image/svg+xml
+    - video/mp4
+    - video/quicktime
+    - video/x-msvideo
+    - video/x-matroska
+    - video/webm
+    - audio/mpeg
+    - audio/wav
+    - audio/x-wav
+    - audio/ogg
+    - audio/mp4
+    - audio/flac
+    - audio/aac
+  minio:
+    endpoint: ""
+    access_key_id: ""
+    secret_access_key: ""
+    bucket: ""
+    region: ""
+    use_ssl: false
+  oss:
+    endpoint: ""
+    access_key_id: ""
+    access_key_secret: ""
+    bucket: ""
+  qiniu:
+    access_key: "hCoQkOH5mLl6h5YM8aKQH64nUGAvxy9L2nlUBd8g"
+    secret_key: "DwXrI2EdpXGGWdQviHyx-MlvpC-D1-ncQD2TUoD1"
+    bucket: "tang2312a"
+    region: ""
+    use_https: true
+    use_cdn_domains: false
+  cos:
+    secret_id: ""
+    secret_key: ""
+    bucket: ""
+    region: ""
+    bucket_url: ""
+
+redis:
+  addr: 127.0.0.1:6379
+  username: ""
+  password: ""
+  db: 0
+  pool_size: 10
+  dial_timeout: 5s
+  read_timeout: 3s
+  write_timeout: 3s
+  lock:
+    key_prefix: xiaolanshu
+    default_ttl: 30s
+
+elasticsearch:
+  addresses:
+    - http://115.191.16.169:9200
+  username: ""
+  password: ""
+  cloud_id: ""
+  api_key: ""
+
+kafka:
+  brokers:
+    - 115.191.16.169:9092
+  topic: xiaolanshu-events
+  group_id: xiaolanshu-consumer
+  client_id: xiaolanshu
+  required_acks: all
+  dial_timeout: 5s
+  producer:
+    max_attempts: 10
+    batch_size: 100
+    batch_bytes: 1048576
+    batch_timeout: 10ms
+    read_timeout: 10s
+    write_timeout: 10s
+    async: false
+    compression: none
+    allow_auto_topic_creation: false
+  consumer:
+    queue_capacity: 100
+    min_bytes: 1
+    max_bytes: 10485760
+    max_wait: 10s
+    read_batch_timeout: 10s
+    commit_interval: 0s
+    heartbeat_interval: 3s
+    session_timeout: 30s
+    rebalance_timeout: 30s
+    start_offset: first
+    watch_partition_changes: true
+    max_attempts: 3
+  sasl:
+    enable: false
+    mechanism: plain
+    username: ""
+    password: ""
+  tls:
+    enable: false
+    insecure_skip_verify: false
+    server_name: ""
+
+alipay:
+  app_id: "9021000162645207"
+  private_key: "MIIEowIBAAKCAQEAnTEC+JTuMIGgRIfRH4X9qVAJxBgZUrT4Wt3RQrLvnIv5qOhbCQ8PmE4sNhP/N+A+qSFj4Yz3CFkdYPqpwaCxyAuUsJI9zGVH1hzEC5wjmf539lXC1NdZ5drNUCsCiai1uphaS5anoKaPKGMXQleNDKXS7byfm8A3d0uWc1Sc0qevH6/gPDQ2Z1sMGgOPfy0cJPGaVDAcgc6pWcvKvySBKVqAi54V66hd+ho7IhjdulHeAcEFKUECVoJfp2zHBK/nfl7f96sir97wnt9ikaYeD1E8qbsv0GQTYCCsajPNwTB5iNP83fY3JR2Q+mFGL708bujMqL5ncXP2utFIiqHJ5wIDAQABAoIBAEFt2C2+WBLKsfo0ikBT1oz2Ksp7uXaqq0GvWN4pewEvZmD/Ln1rznL3/wEXe8E3Tv25T0jgEydfaJIoZCabi8SXxXFlveFpOuiNmrC2cj80I5zef7V2Wg4J8DHxZSIFnncn2VXjRKzjB22pKVJM/QIJt+2K+OisrqmyRdKFoq0vxYPXn5vo7TF+EjE2ZqoWH6vqzeN8h3BnJtp6BJDL2d2NVK5Y8zaUogDThCkRv7VqF/R9HutYfoidZgSflPN1p4wzIH0UKlZ4l2ae1tUfDNOme8tn3JRDM5fqJcXBCS7ELjC+OJSVlMwkKvjJx6Tqx6kZZ3r4Yu1l6iqGhS/uDAECgYEA2GKMHDou2OJdn3XJlEATSNP5NLnxPRbPsPJNevQGYXA4ATnkxjcc1pGV1F+45SOaMexulB+Alm21tBMkS2y0hyxY9x/2j3p0PEL7tiXhLzZ02u26pF6OGn+l00OOd95o0FwqfH1/7RRVMT0y6F67dsVP/uQCVrFf016UhR2Q/gECgYEAufg0Wm1bHrbk7wvFA5p/o+fGXrFbEIJKy3S6DZZkP4YD96Qaw6Lw7rVoss5LR8FCYZL/qC+8ey1MMyNkKWT2Si8IA7yWXyzLCacamy6Xv0BvTSyI9UNic0JYDa1OUqs4YOoac0vvxw94HdnL/A+ULw0443/fUvD2y/7rtkr6l+cCgYEAy/yrBPk8rK1JgUfzDlURWPir167q4qIcjTz/GcfuM/EsestvBgVypDx+uMS8cxcLB8FRxUWlXSpzvxzEfG4wCbYe8GkrcLsJ1L14uZAgJvf5VWIDL20MHaL0WqM3LX135eTdEJrm/ELMxSxiT3ju1NrRvQKJydxQ79wbuxnSVAECgYARQW+SKG15Bx1s9NmeAPrw+XOVm71IZd6MzFLrKdY5crTxiH+XQYo7jAef97ZSfSMsrJgeQfeqMkTMxe7oTF7x+TU0K46EXEKmraOxXHxmGZN6RLSclVkQOsqy0i7fStXbYD1+D0C7ZrsNggUEaWmliAOMUHQnXQZ5XTj/3CsuZwKBgELGMpa9iOsPc+D84wwyyk+S9aAmJ1JvT2BzHGIEip8RvflRyKPgPu9YkfDQtU7q/Ln5Tx9AK3IYSzYQIISLqkqKrXypvnp3mHHM2MHE5iWZk19c/Xdd4+ZZe7T7tzxF64KmzgmqBQODyKVilwvDcx0dg6zoBu1P5hL8NsLfKJnB"
+  alipay_public_key: "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnTEC+JTuMIGgRIfRH4X9qVAJxBgZUrT4Wt3RQrLvnIv5qOhbCQ8PmE4sNhP/N+A+qSFj4Yz3CFkdYPqpwaCxyAuUsJI9zGVH1hzEC5wjmf539lXC1NdZ5drNUCsCiai1uphaS5anoKaPKGMXQleNDKXS7byfm8A3d0uWc1Sc0qevH6/gPDQ2Z1sMGgOPfy0cJPGaVDAcgc6pWcvKvySBKVqAi54V66hd+ho7IhjdulHeAcEFKUECVoJfp2zHBK/nfl7f96sir97wnt9ikaYeD1E8qbsv0GQTYCCsajPNwTB5iNP83fY3JR2Q+mFGL708bujMqL5ncXP2utFIiqHJ5wIDAQAB"
+  production: false
+  notify_url: ""
+  return_url: ""
+  encrypt_key: ""
+  app_cert_public_key_path: ""
+  alipay_root_cert_path: ""
+  alipay_cert_public_key_path: ""
+
+middleware:
+  cors:
+    allow_origins:
+      - "*"
+    allow_methods:
+      - GET
+      - POST
+      - PUT
+      - PATCH
+      - DELETE
+      - OPTIONS
+    allow_headers:
+      - Origin
+      - Content-Type
+      - Authorization
+      - X-Request-ID
+    allow_credentials: false
+  jwt:
+    secret: ""
+    issuer: xiaolanshu
+    expire_seconds: 7200
+
+log:
+  service: xiaolanshu
+  environment: local
+  level: info
+  encoding: json
+  file:
+    enabled: true
+    filename: logs/app.log
+    max_size_mb: 128
+    max_backups: 14
+    max_age_days: 7
+    compress: true
