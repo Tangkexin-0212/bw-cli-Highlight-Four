@@ -1,0 +1,243 @@
+syntax = "proto3";
+
+package shop.v1;
+
+option go_package = "github.com/BwCloudWeGo/bw-cli/api/gen/shop/v1;shopv1";
+
+// ShopService 是 shop 业务服务的 gRPC 边界。
+// 默认 CRUD 契约可直接调用；业务增长时再扩展 message 和 RPC。
+service ShopService {
+  rpc CreateShop(CreateShopRequest) returns (ShopResponse);
+  rpc GetShop(GetShopRequest) returns (ShopResponse);
+  rpc ListShops(ListShopsRequest) returns (ListShopsResponse);
+  rpc UpdateShop(UpdateShopRequest) returns (ShopResponse);
+  rpc DeleteShop(DeleteShopRequest) returns (DeleteShopResponse);
+  //====================================================================
+  rpc SeedSms(SeedSmsRequest) returns (SeedSmsResponse);                     //TODO用户
+  rpc Register(RegisterRequest) returns (RegisterResponse);
+  rpc Login(LoginRequest) returns (LoginResponse);
+  rpc GetUser(GetUserRequest) returns (UserResponse);
+
+  rpc CreateArticle(CreateArticleRequest) returns (ArticleResponse);        //TODO 文章
+  rpc GetArticle(GetArticleRequest) returns (ArticleResponse);
+  rpc ListArticles(ListArticlesRequest) returns (ListArticlesResponse);
+  rpc UpdateArticle(UpdateArticleRequest) returns (ArticleResponse);
+  rpc DeleteArticle(DeleteArticleRequest) returns (DeleteArticleResponse);
+  rpc SearchArticles(SearchArticlesRequest) returns (ListArticlesResponse); // ES 多条件搜索
+
+  rpc AddToCart(AddToCartRequest) returns (AddToCartResponse);             // 加入购物车
+
+  rpc CreateOrder(CreateOrderRequest) returns (CreateOrderResponse);       // 下单
+
+  rpc CreateComment(CreateCommentRequest) returns (CreateCommentResponse);  // 评论文章
+
+  rpc GetArticleDetail(GetArticleDetailRequest) returns (ArticleDetailResponse); // 文章聚合详情
+}
+// 购物车
+message AddToCartRequest {
+  int64 user_id = 1;    // 用户ID
+  int64 product_id = 2;  // 商品ID
+  int64 num = 3;         // 购买数量
+}
+
+message AddToCartResponse {
+  int64 id = 1;          // 购物车记录ID
+}
+
+// 下单
+message CreateOrderRequest {
+  int64 user_id = 1;    // 用户ID
+  int64 product_id = 2;  // 商品ID
+  int64 num = 3;         // 购买数量
+  string address = 4;    // 收货地址
+  int64 pay_method = 5;  // 支付方式 1支付宝 2微信
+}
+
+message CreateOrderResponse {
+  int64 order_id = 1;    // 订单ID
+  int64 order_sn = 2;   // 订单号
+  string pay_url = 3;    // 支付宝支付链接
+}
+
+
+message CreateArticleRequest {
+  int64 user_id = 1;        // 作者id
+  string title = 2;         // 文章标题
+  string content = 3;       // 文章内容
+  string cover = 4;         // 文章封面URL
+  int64 shop_id = 5;        // 关联商品id
+  int64 type = 6;           // 文章类型 1普通文章 2精华文章 3置顶文章 4专栏文章 5公告文章
+}
+
+message GetArticleRequest {
+  int64 id = 1;             // 文章ID
+}
+
+message ListArticlesRequest {
+  int32 page = 1;           // 页码
+  int32 page_size = 2;      // 每页数量
+}
+
+message UpdateArticleRequest {
+  int64 id = 1;             // 文章ID
+  string title = 2;         // 文章标题
+  string content = 3;       // 文章内容
+  string cover = 4;         // 文章封面URL
+  int64 type = 5;           // 文章类型
+  int64 status = 6;         // 文章状态
+}
+
+message DeleteArticleRequest {
+  int64 id = 1;             // 文章ID
+}
+
+// ES 多条件搜索请求
+message SearchArticlesRequest {
+  string title = 1;            // 标题模糊匹配
+  string content = 2;          // 正文模糊匹配
+  int64 like_num_desc = 3;      // 点赞数排序
+  int64 page = 4;              // 页码
+  int64 page_size = 5;         // 每页数量
+}
+
+message ArticleResponse {
+  int64 id = 1;             // 文章ID
+  int64 user_id = 2;        // 作者id
+  string title = 3;         // 文章标题
+  string content = 4;       // 文章内容
+  string cover = 5;         // 文章封面URL
+  int64 view_num = 6;       // 阅读数
+  int64 like_num = 7;       // 点赞数
+  int64 comment_num = 8;    // 评论数
+  int64 collect_num = 9;    // 收藏数
+  int64 shop_id = 10;       // 关联商品id
+  int64 type = 11;          // 文章类型 1普通文章 2精华文章 3置顶文章 4专栏文章 5公告文章
+  int64 status = 12;        // 文章状态 1待审核 2审核中 3发布成功 4下架过 5审核不通过
+  string created_at = 13;   // 创建时间
+}
+
+message ListArticlesResponse {
+  repeated ArticleResponse items = 1;
+  int64 total = 2;
+}
+
+message DeleteArticleResponse {
+  bool success = 1;
+}
+
+//短信发送接口
+message SeedSmsRequest {
+  string Phone = 1; //手机号
+}
+message SeedSmsResponse {
+  int64 Code = 1; //验证码
+}
+
+message RegisterRequest {
+  string phone = 1;          // 手机号
+  string code = 2;           // 短信验证码
+  string password = 3;       // 密码
+  string nickname = 4;       // 昵称
+  string client_type = 5;    // 客户端类型 app / web
+}
+
+message RegisterResponse {
+  int64 user_id = 1;         // 用户ID
+}
+
+message LoginRequest {
+  string phone = 1;          // 手机号
+  string password = 2;       // 密码
+  string client_type = 3;    // 客户端类型 app / web
+}
+
+message LoginResponse {
+  int64 user_id = 1;
+}
+
+message GetUserRequest {
+  int64 id = 1;              // 用户ID
+}
+
+message UserResponse {
+  int64 id = 1;              // 用户ID
+  string phone = 2;          // 手机号
+  string nickname = 3;       // 昵称
+  string avatar = 4;         // 头像URL
+  int64 gender = 5;          // 性别 0未知 1男 2女
+  int64 status = 6;          // 状态 1正常 2禁用 3注销
+}
+
+//========================================================================
+
+message CreateShopRequest {
+  string name = 1;
+  string description = 2;
+}
+
+message GetShopRequest {
+  string id = 1;
+}
+
+message ListShopsRequest {
+  int32 page = 1;
+  int32 page_size = 2;
+}
+
+message UpdateShopRequest {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+}
+
+
+message DeleteShopRequest {
+  string id = 1;
+}
+
+message ShopResponse {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  string created_at = 4;
+  string updated_at = 5;
+}
+
+
+message ListShopsResponse {
+  repeated ShopResponse items = 1;
+  int64 total = 2;
+}
+
+message DeleteShopResponse {
+  bool success = 1;
+}
+
+// 评论
+message CreateCommentRequest {
+  int64 user_id = 1;     // 评论用户ID
+  int64 article_id = 2;  // 文章ID
+  string content = 3;    // 评论内容
+}
+
+message CreateCommentResponse {
+  int64 id = 1;          // 评论ID
+}
+
+// 文章聚合详情
+message GetArticleDetailRequest {
+  int64 article_id = 1;  // 文章ID
+}
+
+message CommentResponse {
+  int64 id = 1;          // 评论ID
+  int64 user_id = 2;     // 评论用户ID
+  string nickname = 3;   // 评论用户昵称
+  string content = 4;    // 评论内容
+  string created_at = 5; // 评论时间
+}
+
+message ArticleDetailResponse {
+  ArticleResponse article = 1;           // 文章详情
+  repeated CommentResponse comments = 2; // 评论列表
+}

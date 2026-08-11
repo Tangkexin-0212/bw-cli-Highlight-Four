@@ -1,0 +1,59 @@
+syntax = "proto3";
+
+package comment.v1;
+
+option go_package = "github.com/BwCloudWeGo/bw-cli/api/gen/comment/v1;commentv1";
+
+// CommentService 是 comment 业务服务的 gRPC 边界。
+// 默认 CRUD 契约可直接调用；业务增长时再扩展 message 和 RPC。
+service CommentService {
+  rpc CreateComment(CreateCommentRequest) returns (CommentResponse);
+  rpc GetComment(GetCommentRequest) returns (CommentResponse);
+  rpc ListComments(ListCommentsRequest) returns (ListCommentsResponse);
+  rpc UpdateComment(UpdateCommentRequest) returns (CommentResponse);
+  rpc DeleteComment(DeleteCommentRequest) returns (DeleteCommentResponse);
+}
+
+message CreateCommentRequest {
+  string name = 1;
+  string description = 2;
+}
+
+
+message GetCommentRequest {
+  string id = 1;
+}
+
+message ListCommentsRequest {
+  int32 page = 1;
+  int32 page_size = 2;
+}
+
+message UpdateCommentRequest {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+}
+
+
+message DeleteCommentRequest {
+  string id = 1;
+}
+
+message CommentResponse {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  string created_at = 4;
+  string updated_at = 5;
+}
+
+
+message ListCommentsResponse {
+  repeated CommentResponse items = 1;
+  int64 total = 2;
+}
+
+message DeleteCommentResponse {
+  bool success = 1;
+}

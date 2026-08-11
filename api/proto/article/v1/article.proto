@@ -1,0 +1,73 @@
+syntax = "proto3";
+
+package article.v1;
+
+option go_package = "github.com/BwCloudWeGo/bw-cli/api/gen/article/v1;articlev1";
+
+// ArticleService 是 article 业务服务的 gRPC 边界。
+// 默认 CRUD 契约可直接调用；业务增长时再扩展 message 和 RPC。
+service ArticleService {
+  rpc CreateArticle(CreateArticleRequest) returns (ArticleResponse);
+  rpc GetArticle(GetArticleRequest) returns (ArticleResponse);
+  rpc ListArticles(ListArticlesRequest) returns (ListArticlesResponse);
+  rpc UpdateArticle(UpdateArticleRequest) returns (ArticleResponse);
+  rpc DeleteArticle(DeleteArticleRequest) returns (DeleteArticleResponse);
+}
+
+message CreateArticleRequest {
+  int64 user_id = 1;        // 作者id
+  string title = 2;         // 文章标题
+  string content = 3;       // 文章内容
+  string cover = 4;         // 文章封面URL
+  int64 shop_id = 5;        // 关联商品id
+  int64 type = 6;           // 文章类型 1普通文章 2精华文章 3置顶文章 4专栏文章 5公告文章
+}
+
+message GetArticleRequest {
+  int64 id = 1;             // 文章ID
+}
+
+message ListArticlesRequest {
+  int32 page = 1;           // 页码
+  int32 page_size = 2;      // 每页数量
+  int64 user_id = 3;        // 按作者过滤(可选)
+  int64 type = 4;           // 按类型过滤(可选)
+}
+
+message UpdateArticleRequest {
+  int64 id = 1;             // 文章ID
+  string title = 2;         // 文章标题
+  string content = 3;       // 文章内容
+  string cover = 4;         // 文章封面URL
+  int64 type = 5;           // 文章类型
+  int64 status = 6;         // 文章状态
+}
+
+message DeleteArticleRequest {
+  int64 id = 1;             // 文章ID
+}
+
+message ArticleResponse {
+  int64 id = 1;             // 文章ID
+  int64 user_id = 2;        // 作者id
+  string title = 3;         // 文章标题
+  string content = 4;       // 文章内容
+  string cover = 5;         // 文章封面URL
+  int64 view_num = 6;       // 阅读数
+  int64 like_num = 7;       // 点赞数
+  int64 comment_num = 8;    // 评论数
+  int64 collect_num = 9;    // 收藏数
+  int64 shop_id = 10;       // 关联商品id
+  int64 type = 11;          // 文章类型 1普通文章 2精华文章 3置顶文章 4专栏文章 5公告文章
+  int64 status = 12;        // 文章状态 1待审核 2审核中 3发布成功 4下架过 5审核不通过
+  string created_at = 13;   // 创建时间
+}
+
+message ListArticlesResponse {
+  repeated ArticleResponse items = 1;
+  int64 total = 2;
+}
+
+message DeleteArticleResponse {
+  bool success = 1;
+}
